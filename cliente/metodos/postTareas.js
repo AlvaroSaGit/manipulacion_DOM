@@ -1,4 +1,4 @@
-import {post} from "../helpers/post.js"
+import { Post } from "../helper/index.js";
 
 export const createTask = (title,description) => {
     const idUsuario = localStorage.getItem("idUsuarioActual");
@@ -7,7 +7,7 @@ export const createTask = (title,description) => {
         description:description,
         userID: parseInt(idUsuario)
     }
-    post("tareas", newTask);
+    Post("tareas", newTask);
 
     alert("Tarea creada exitosamente");
 }
