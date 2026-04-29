@@ -1,4 +1,9 @@
 import { postUsers } from "./metodos/postUsers.js";
+
+import { get } from "./helper/get.js";
+// ... los demás imports que ya tengas
+
+
 /**
  * ============================================
  * EJERCICIO DE MANIPULACIÓN DEL DOM
@@ -48,6 +53,11 @@ const messageCount = document.getElementById('messageCount');
 // Variable para llevar el conteo de mensajes
 let totalMessages = 0;
 
+// Usamos selectores de ID (#) y clases (.)
+const searchUserForm = document.querySelector('#searchUserForm');
+const searchUserId = document.querySelector('#searchUserId');
+const userInfoContainer = document.querySelector('#userInfoContainer');
+const searchError = document.querySelector('#searchError');
 
 // ============================================
 // 2. FUNCIONES AUXILIARES
@@ -286,6 +296,40 @@ async function handleFormSubmit(event) {
 
 
 messageForm.addEventListener('submit', handleFormSubmit);
+
+searchUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const idBusqueda = searchUserId.value;
+    searchError.textContent = ""; 
+
+    try {
+        const usuarios = await get('users');
+        const usuarioEncontrado = usuarios.find(u => u.document === idBusqueda);
+
+        if (usuarioEncontrado) {
+            userInfoContainer.style.display = 'block';
+            userInfoContainer.innerHTML = `
+                <div style="border-bottom: 1px solid #ccc; margin-bottom: 10px;">
+                    <h3 style="color: #0056b3; margin: 0;">Usuario Encontrado</h3>
+                </div>
+                <p><strong>Nombre completo:</strong> ${usuarioEncontrado.name}</p>
+                <p><strong>N° Documento:</strong> ${usuarioEncontrado.document}</p>
+                <p><strong>Estado en sistema:</strong> 
+                    <span style="color: ${usuarioEncontrado.active ? 'green' : 'red'}">
+                        ${usuarioEncontrado.active ? 'Activo' : 'Inactivo'}
+                    </span>
+                </p>
+            `;
+        } else {
+            userInfoContainer.style.display = 'none';
+            searchError.textContent = "No se encontró ningún usuario con ese documento.";
+        }
+    } catch (error) {
+        console.error("Error al consultar:", error);
+        searchError.textContent = "Error de conexión con el servidor.";
+    }
+});
 
 // TODO: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
