@@ -153,6 +153,12 @@ body {
     font-weight: var(--font-weight-normal);
 }
 
+.contenedorUsuarios{
+    width: 200px;
+    height: 200px;
+    background-color: red;
+}
+
 /* ============================================
    CARD COMPONENT
    ============================================ */

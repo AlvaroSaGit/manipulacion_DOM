@@ -1,6 +1,7 @@
 import { postUsers } from "./metodos/index.js";
 
 import { get } from "./helper/index.js";
+import { getTareas } from "./metodos/index.js";
 // ... los demás imports que ya tengas
 
 
@@ -30,6 +31,10 @@ import { get } from "./helper/index.js";
 const userForm = document.getElementById('searchUserForm');
 const userDocInput = document.getElementById('searchUserId');
 const userDocError = document.getElementById('searchError');
+
+// ID del apartado para mostrar usuarios
+const mostrarUsuarios = document.getElementById('mostrarUsuarios');
+
 // Formulario
 const messageForm = document.getElementById('messageForm');
 
@@ -196,6 +201,39 @@ function createMessageElement(userName, message) {
     // PASO 6: Ocultar el estado vacío si está visible
 }
 
+function mostrarUsers(usuarios){
+           // Crear elemento html (DOM) asignado a liID - Document
+        const liDocument = document.createElement("li");
+        // Usuario
+        const Usuario = document.createElement("li");
+    
+        // Contenedor para el Documento y usuario
+        const contenedor = document.createElement("div");
+    
+        contenedor.classList.add("containUser");
+    
+        liDocument.textContent = usuarios.documento;
+        Usuario.textContent = usuarios.nombre;
+
+        contenedor.appendChild(Usuario);
+        contenedor.appendChild(liDocument);
+        mostrarUsuarios.appendChild(contenedor)
+}
+
+const Usuariosmostrar = async ()=>{
+    // usuarios
+    const usuarios = await getTareas();
+    
+    
+    usuarios.forEach(i =>{
+        mostrarUsers(i);
+    })
+    // appendChild
+    // textContent
+    // createElement
+    // classList
+}
+Usuariosmostrar()
 
 // ============================================
 // 4. MANEJO DE EVENTOS
@@ -274,11 +312,11 @@ async function handleUserSearch(event) {
 /**
  * Limpia los errores cuando el usuario empieza a escribir
  */
-function handleInputChange() {
+//function handleInputChange() {
     // TODO: Implementar limpieza de errores al escribir
     // Esta función se ejecuta cuando el usuario escribe en un campo
     // Debe limpiar el error de ese campo específico
-}
+//}
 
 async function handleFormSubmit(event) {
     event.preventDefault(); // Evita que la página se recargue

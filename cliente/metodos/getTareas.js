@@ -1,5 +1,5 @@
 import { get } from "../helper/index.js";
 
 export const getTareas = async () => {
-    return get('tareas');
+    return get('users');
 }
