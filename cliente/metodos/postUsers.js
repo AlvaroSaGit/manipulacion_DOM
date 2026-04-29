@@ -1,4 +1,4 @@
-import { Post } from "../helper/post.js";
+import { Post } from "../helper/index.js";
 
 export const postUsers = async (nombre, documento) => {
     const nuevoUsuario = {

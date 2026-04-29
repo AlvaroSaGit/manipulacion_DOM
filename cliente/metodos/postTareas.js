@@ -1,4 +1,4 @@
-import {post} from "../helpers/post.js"
+import {post} from "../helpers/index.js"
 
 export const createTask = (title,description) => {
     const idUsuario = localStorage.getItem("idUsuarioActual");
