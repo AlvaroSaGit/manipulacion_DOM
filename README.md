@@ -1,4 +1,4 @@
-# PROYECTO BASE: [Nombre de la Aplicación] - Software Factory SENA
+# PROYECTO BASE: [Desarrollo DOM] - Software Factory SENA
 
 **Metodología:** *"Del Requerimiento al Producto"*
 
@@ -197,7 +197,7 @@ La fase del proyecto se considera exitosa, terminada y lista para calificación 
 
 - El **Milestone** en GitHub marca el **100%** de progreso  
 - Todas las **Issues** del hito están cerradas y vinculadas a un PR aprobado  
-- El proyecto está desplegado en vivo (ej. Vercel, GitHub Pages) y funciona sin errores  
+- El proyecto está desplegado en vivo (GitHub Pages) y funciona sin errores  
 
 ### El "Por qué"
 
@@ -207,9 +207,9 @@ En la industria, el software que no está publicado no existe. Esto vincula el r
 
 ## DIRECCIÓN DEL PROYECTO
 
-- **Instructor:** [Tu Nombre Aquí]  
+- **Instructor:** [John Freddy Becerra Castellano]  
 - **Institución:** Servicio Nacional de Aprendizaje (SENA)  
-- **Centro:** [Nombre de tu Centro de Formación]  
+- **Centro:** [Centro Industrial de Mantenimiento Integral]  
 - **Programa:** Análisis y Desarrollo de Software  
 
 ---
