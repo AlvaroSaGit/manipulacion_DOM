@@ -19,7 +19,10 @@
  * Seleccionamos los elementos del DOM que necesitamos manipular.
  * Usamos getElementById para obtener referencias a los elementos únicos.
  */
-
+// Busqueda de usuarios 
+const userForm = document.getElementById('searchUserForm');
+const userDocInput = document.getElementById('searchUserId');
+const userDocError = document.getElementById('searchError');
 // Formulario
 const messageForm = document.getElementById('messageForm');
 
@@ -57,6 +60,7 @@ let totalMessages = 0;
  * @returns {boolean} - true si es válido, false si no lo es
  */
 function isValidInput(value) {
+    return value.trim().length > 0;
     // TODO: Implementar validación
     // Pista: usa trim() para eliminar espacios al inicio y final
     // Retorna true si después de trim() el string tiene longitud > 0
@@ -68,6 +72,9 @@ function isValidInput(value) {
  * @param {string} message - Mensaje de error a mostrar
  */
 function showError(errorElement, message) {
+    errorElement.textContent = message;
+    
+
     // TODO: Implementar función para mostrar error
     // Pista: asigna el mensaje al textContent del elemento
 }
@@ -77,52 +84,14 @@ function showError(errorElement, message) {
  * @param {HTMLElement} errorElement - Elemento del que limpiar el error
  */
 function clearError(errorElement) {
+    errorElement.textContent = '';
     // TODO: Implementar función para limpiar error
     // Pista: asigna un string vacío al textContent
 }
 
 /**
- * Valida todos los campos del formulario
- * @returns {boolean} - true si todos los campos son válidos, false si alguno no lo es
- */
-function validateForm() {
-    // TODO: Implementar validación completa del formulario
-    // 1. Obtener los valores de los inputs usando .value
-    // 2. Crear una variable para saber si el formulario es válido (inicialmente true)
-    // 3. Validar el campo de nombre de usuario
-    //    - Si no es válido, mostrar error y cambiar la variable a false
-    //    - Si es válido, limpiar el error
-    // 4. Validar el campo de mensaje
-    //    - Si no es válido, mostrar error y cambiar la variable a false
-    //    - Si es válido, limpiar el error
-    // 5. Retornar si el formulario es válido o no
-    
-    // Ejemplo de estructura:
-    /*
-    const userName = userNameInput.value;
-    const userMessage = userMessageInput.value;
-    let isValid = true;
-    
-    // Validar nombre
-    if (!isValidInput(userName)) {
-        // Mostrar error
-        // Agregar clase 'error' al input
-        isValid = false;
-    } else {
-        // Limpiar error
-        // Remover clase 'error' del input
-    }
-    
-    // Validar mensaje (estructura similar)
-    
-    return isValid;
-    */
-}
-
-/**
  * Obtiene la fecha y hora actual formateada
- * @returns {string} - Fecha y hora en formato legible
- */
+*/
 function getCurrentTimestamp() {
     const now = new Date();
     const options = { 
@@ -160,7 +129,7 @@ function updateMessageCount() {
 
 /**
  * Oculta el estado vacío (mensaje cuando no hay mensajes)
- */
+*/
 function hideEmptyState() {
     // TODO: Implementar función para ocultar el estado vacío
     // Pista: Agrega la clase 'hidden' al elemento emptyState
@@ -183,7 +152,7 @@ function showEmptyState() {
  * Crea un nuevo elemento de mensaje en el DOM
  * @param {string} userName - Nombre del usuario
  * @param {string} message - Contenido del mensaje
- */
+*/
 function createMessageElement(userName, message) {
     // TODO: Implementar la creación de un nuevo mensaje
     
@@ -195,15 +164,15 @@ function createMessageElement(userName, message) {
     // Puedes usar innerHTML con la siguiente estructura:
     /*
     <div class="message-card__header">
-        <div class="message-card__user">
-            <div class="message-card__avatar">[INICIALES]</div>
-            <span class="message-card__username">[NOMBRE]</span>
-        </div>
-        <span class="message-card__timestamp">[FECHA]</span>
+    <div class="message-card__user">
+    <div class="message-card__avatar">[INICIALES]</div>
+    <span class="message-card__username">[NOMBRE]</span>
+    </div>
+    <span class="message-card__timestamp">[FECHA]</span>
     </div>
     <div class="message-card__content">[MENSAJE]</div>
     */
-    
+   
     // PASO 3: Insertar el nuevo elemento en el contenedor de mensajes
     // Pista: messagesContainer.appendChild(nuevoElemento)
     // O usar insertBefore para agregarlo al principio
@@ -219,35 +188,52 @@ function createMessageElement(userName, message) {
 // ============================================
 // 4. MANEJO DE EVENTOS
 // ============================================
+async function handleUserSearch(event) {
+    event.preventDefault();
+    
+     clearError(userDocError);
+    
+    const documento = userDocInput.value.trim();
+    
+    if (!isValidInput(documento)) {
+            showError(userDocError, 'Ingresa el documento del usuario');
+            return;
+    }
+    
+    try {
+        const response = await fetch('http://localhost:3000/users');
+        const users = await response.json();
+    
+        console.log('Respuesta JSON:', users);
+    
+        const user = users.find(
+                u => String(u.documento).trim() === String(documento).trim()
+        );
+    
+        if (user) {
+                alert(`Usuario encontrado: ${user.nombre}`);
+                console.log('Usuario encontrado:', user);
+        } else {
+                showError(userDocError, 'Usuario no encontrado');
+            }
+        } catch (error) {
+            console.error('Error al conectar con el servidor:', error);
+            showError(userDocError, 'Error al conectar con el servidor');
+        }
+    }
+    
+    function handleInputChange() {
+        if (userDocInput.value.trim().length > 0) {
+            clearError(userDocError);
+        }
+    }
+    
+    userForm.addEventListener('submit', handleUserSearch);
+    userDocInput.addEventListener('input', handleInputChange);
+    
 
 /**
- * Maneja el evento de envío del formulario
- * @param {Event} event - Evento del formulario
- */
-function handleFormSubmit(event) {
-    // TODO: Implementar el manejador del evento submit
-    
-    // PASO 1: Prevenir el comportamiento por defecto del formulario
-    // Pista: event.preventDefault()
-    
-    // PASO 2: Validar el formulario
-    // Si no es válido, detener la ejecución (return)
-    
-    // PASO 3: Obtener los valores de los campos
-    
-    // PASO 4: Crear el nuevo elemento de mensaje
-    // Llamar a createMessageElement con los valores obtenidos
-    
-    // PASO 5: Limpiar el formulario
-    // Pista: messageForm.reset()
-    
-    // PASO 6: Limpiar los errores
-    
-    // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
-    // Pista: userNameInput.focus()
-}
-
-/**
+ * @returns {string} - Fecha y hora en formato legible
  * Limpia los errores cuando el usuario empieza a escribir
  */
 function handleInputChange() {

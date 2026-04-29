@@ -2,66 +2,63 @@
   "users": [
     {
       "id": "1",
-      "name": "Ana Torres",
-      "active": true,
-      "document": "111111"
+      "nombre": "Ana Torres",
+      "activo": true,
+      "documento": "111111"
     },
     {
       "id": "2",
-      "name": "Carlos Gómez",
-      "active": true,
-      "document": "2222"
+      "nombre": "Carlos Gómez",
+      "activo": true,
+      "documento": "222222"
     },
     {
       "id": "3",
-      "name": "María López",
-      "active": false,
-      "document": "333333"
+      "nombre": "María López",
+      "activo": false,
+      "documento": "333333"
     },
     {
       "id": "4",
-      "name": "Juan Pérez",
-      "active": true,
-      "document": "444444"
+      "nombre": "Juan Pérez",
+      "activo": true,
+      "documento": "444444"
     },
     {
       "id": "5",
-      "name": "Laura Martínez",
-      "active": true,
-      "document": "555555"
+      "nombre": "Laura Martínez",
+      "activo": true,
+      "documento": "555555"
     },
     {
       "id": "6",
-      "name": "Pedro Sánchez",
-      "active": false,
-      "document": "666666"
+      "nombre": "Pedro Sánchez",
+      "activo": false,
+      "documento": "666666"
     },
     {
       "id": "7",
-      "name": "Sofía Ramírez",
-      "active": true,
-      "document": "777777"
+      "nombre": "Sofía Ramírez",
+      "activo": true,
+      "documento": "777777"
     },
     {
       "id": "8",
-      "name": "Andrés Morales",
-      "active": true,
-      "document": "888888"
+      "nombre": "Andrés Morales",
+      "activo": true,
+      "documento": "888888"
     },
     {
       "id": "9",
-      "name": "Valentina Cruz",
-      "active": true,
-      "document": "999999"
+      "nombre": "Valentina Cruz",
+      "activo": true,
+      "documento": "999999"
     },
     {
       "id": "10",
-      "name": "Diego Herrera",
-      "active": false,
-      "document": "101010"
+      "nombre": "Diego Herrera",
+      "activo": false,
+      "documento": "101010"
     }
-  
   ]
-
- 
 }
