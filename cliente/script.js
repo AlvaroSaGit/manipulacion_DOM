@@ -23,9 +23,21 @@
 const userForm = document.getElementById('searchUserForm');
 const userDocInput = document.getElementById('searchUserId');
 const userDocError = document.getElementById('searchError');
+
+//alt + 39 para las comillas simples
+// registro de tareas
+let usuarioEncontrado = null;
+const userInfoContainer = document.getElementById('userInfoContainer');
+const taskForm = document.getElementById('taskForm');
+const taskFieldset = document.getElementById('taskFieldset');
+const taskTitle = document.getElementById('taskTitle');
+const taskDescription = document.getElementById('taskDescription');
+const taskDescriptionError = document.getElementById('taskDescriptionError');
+const tasksTableBody = document.getElementById('tasksTableBody');
+const emptyTasksRow = document.getElementById('emptyTasksRow')
 // Formulario
 const messageForm = document.getElementById('messageForm');
-
+const taskCount = document.getElementById('taskCount')
 // Campos de entrada
 const userNameInput = document.getElementById('userName');
 const userMessageInput = document.getElementById('userMessage');
@@ -209,17 +221,28 @@ async function handleUserSearch(event) {
         const user = users.find(
                 u => String(u.documento).trim() === String(documento).trim()
         );
-    
         if (user) {
-                alert(`Usuario encontrado: ${user.nombre}`);
-                console.log('Usuario encontrado:', user);
+            usuarioEncontrado = user;
+
+            userInfoContainer.style.display = 'block';
+            userInfoContainer.innerHTML =
+                '<strong>Usuario encontrado:</strong><br>' +
+                'Nombre: ' + user.nombre + '<br>' +
+                'Documento: ' + user.documento;
+
+            taskFieldset.disabled = false;
         } else {
-                showError(userDocError, 'Usuario no encontrado');
-            }
-        } catch (error) {
-            console.error('Error al conectar con el servidor:', error);
-            showError(userDocError, 'Error al conectar con el servidor');
+            usuarioEncontrado = null;
+            userInfoContainer.style.display = 'none';
+            taskFieldset.disabled = true;
+            showError(userDocError, 'Usuario no encontrado');
         }
+
+    } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+        showError(userDocError, 'Error al conectar con el servidor');
+    }
+        
     }
     
     function handleInputChange() {
@@ -232,15 +255,13 @@ async function handleUserSearch(event) {
     userDocInput.addEventListener('input', handleInputChange);
     
 
+
+
 /**
  * @returns {string} - Fecha y hora en formato legible
  * Limpia los errores cuando el usuario empieza a escribir
  */
-function handleInputChange() {
-    // TODO: Implementar limpieza de errores al escribir
-    // Esta función se ejecuta cuando el usuario escribe en un campo
-    // Debe limpiar el error de ese campo específico
-}
+
 
 
 // ============================================
