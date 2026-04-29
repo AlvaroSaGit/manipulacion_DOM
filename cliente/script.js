@@ -1,3 +1,4 @@
+import { postUsers } from "./metodos/postUsers.js";
 /**
  * ============================================
  * EJERCICIO DE MANIPULACIÓN DEL DOM
@@ -10,6 +11,7 @@
  * Fecha: [Fecha actual]
  * ============================================
  */
+
 
 // ============================================
 // 1. SELECCIÓN DE ELEMENTOS DEL DOM
@@ -256,14 +258,34 @@ function handleInputChange() {
     // Debe limpiar el error de ese campo específico
 }
 
+async function handleFormSubmit(event) {
+    event.preventDefault(); // Evita que la página se recargue
+
+    // 1. Obtenemos los valores de los inputs que ya están declarados arriba
+    const nombre = userNameInput.value;
+    const documento = userMessageInput.value;
+
+    // 2. Validación básica
+    if (nombre.trim() === "" || documento.trim() === "") {
+        alert("Por favor, completa todos los campos del registro.");
+        return;
+    }
+
+    // 3. Enviamos los datos al db.json usando tu método
+    const resultado = await postUsers(nombre, documento);
+
+    if (resultado) {
+        alert("¡Registro exitoso en el sistema!");
+        messageForm.reset(); // Limpiamos el formulario
+    }
+}
 
 // ============================================
 // 5. REGISTRO DE EVENTOS
 // ============================================
 
-/**
- * Aquí registramos todos los event listeners
- */
+
+messageForm.addEventListener('submit', handleFormSubmit);
 
 // TODO: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
