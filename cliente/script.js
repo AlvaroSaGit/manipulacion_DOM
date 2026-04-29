@@ -1,6 +1,6 @@
-import { postUsers } from "./metodos/postUsers.js";
+import { postUsers } from "./metodos/index.js";
 
-import { get } from "./helper/get.js";
+import { get } from "./helper/index.js";
 // ... los demás imports que ya tengas
 
 
@@ -236,7 +236,7 @@ function createMessageElement(userName, message) {
  * Maneja el evento de envío del formulario
  * @param {Event} event - Evento del formulario
  */
-function handleFormSubmit(event) {
+// function handleFormSubmit(event) {
     // TODO: Implementar el manejador del evento submit
     
     // PASO 1: Prevenir el comportamiento por defecto del formulario
@@ -257,7 +257,7 @@ function handleFormSubmit(event) {
     
     // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
     // Pista: userNameInput.focus()
-}
+//}
 
 /**
  * Limpia los errores cuando el usuario empieza a escribir
@@ -295,7 +295,7 @@ async function handleFormSubmit(event) {
 // ============================================
 
 
-messageForm.addEventListener('submit', handleFormSubmit);
+// messageForm.addEventListener('submit', handleFormSubmit);
 
 searchUserForm.addEventListener('submit', async (e) => {
     e.preventDefault();
