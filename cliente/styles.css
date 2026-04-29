@@ -330,7 +330,6 @@ body {
     width: 100%;
     /* quita los espacios dobles entre los bordes de las celdas */
     border-collapse: collapse;
-    text-align: left;
 }
 
 /* estilos para los encabezados de la tabla (th) */
@@ -352,6 +351,7 @@ body {
     border-bottom: 1px solid var(--color-gray-100);
     /* hace que el cambio de color al pasar el mouse sea suave */
     transition: background-color var(--transition-fast);
+    text-align: left;
 }
 
 /* quita el borde de abajo a la ultima fila para que se vea mas limpio */
