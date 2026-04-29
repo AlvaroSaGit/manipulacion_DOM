@@ -1,3 +1,9 @@
+import { postUsers } from "./metodos/index.js";
+
+import { get } from "./helper/index.js";
+// ... los demás imports que ya tengas
+
+
 /**
  * ============================================
  * EJERCICIO DE MANIPULACIÓN DEL DOM
@@ -10,6 +16,7 @@
  * Fecha: [Fecha actual]
  * ============================================
  */
+
 
 // ============================================
 // 1. SELECCIÓN DE ELEMENTOS DEL DOM
@@ -61,6 +68,11 @@ const messageCount = document.getElementById('messageCount');
 // Variable para llevar el conteo de mensajes
 let totalMessages = 0;
 
+// Usamos selectores de ID (#) y clases (.)
+const searchUserForm = document.querySelector('#searchUserForm');
+const searchUserId = document.querySelector('#searchUserId');
+const userInfoContainer = document.querySelector('#userInfoContainer');
+const searchError = document.querySelector('#searchError');
 
 // ============================================
 // 2. FUNCIONES AUXILIARES
@@ -258,19 +270,99 @@ async function handleUserSearch(event) {
 
 
 /**
- * @returns {string} - Fecha y hora en formato legible
+ * Maneja el evento de envío del formulario
+ * @param {Event} event - Evento del formulario
+ */
+// function handleFormSubmit(event) {
+    // TODO: Implementar el manejador del evento submit
+    
+    // PASO 1: Prevenir el comportamiento por defecto del formulario
+    // Pista: event.preventDefault()
+    
+    // PASO 2: Validar el formulario
+    // Si no es válido, detener la ejecución (return)
+    
+    // PASO 3: Obtener los valores de los campos
+    
+    // PASO 4: Crear el nuevo elemento de mensaje
+    // Llamar a createMessageElement con los valores obtenidos
+    
+    // PASO 5: Limpiar el formulario
+    // Pista: messageForm.reset()
+    
+    // PASO 6: Limpiar los errores
+    
+    // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
+    // Pista: userNameInput.focus()
+//}
+
+/**
  * Limpia los errores cuando el usuario empieza a escribir
  */
 
 
+async function handleFormSubmit(event) {
+    event.preventDefault(); // Evita que la página se recargue
+
+    // 1. Obtenemos los valores de los inputs que ya están declarados arriba
+    const nombre = userNameInput.value;
+    const documento = userMessageInput.value;
+
+    // 2. Validación básica
+    if (nombre.trim() === "" || documento.trim() === "") {
+        alert("Por favor, completa todos los campos del registro.");
+        return;
+    }
+
+    // 3. Enviamos los datos al db.json usando tu método
+    const resultado = await postUsers(nombre, documento);
+
+    if (resultado) {
+        alert("¡Registro exitoso en el sistema!");
+        messageForm.reset(); // Limpiamos el formulario
+    }
+}
 
 // ============================================
 // 5. REGISTRO DE EVENTOS
 // ============================================
 
-/**
- * Aquí registramos todos los event listeners
- */
+
+// messageForm.addEventListener('submit', handleFormSubmit);
+
+searchUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const idBusqueda = searchUserId.value;
+    searchError.textContent = ""; 
+
+    try {
+        const usuarios = await get('users');
+        const usuarioEncontrado = usuarios.find(u => u.document === idBusqueda);
+
+        if (usuarioEncontrado) {
+            userInfoContainer.style.display = 'block';
+            userInfoContainer.innerHTML = `
+                <div style="border-bottom: 1px solid #ccc; margin-bottom: 10px;">
+                    <h3 style="color: #0056b3; margin: 0;">Usuario Encontrado</h3>
+                </div>
+                <p><strong>Nombre completo:</strong> ${usuarioEncontrado.name}</p>
+                <p><strong>N° Documento:</strong> ${usuarioEncontrado.document}</p>
+                <p><strong>Estado en sistema:</strong> 
+                    <span style="color: ${usuarioEncontrado.active ? 'green' : 'red'}">
+                        ${usuarioEncontrado.active ? 'Activo' : 'Inactivo'}
+                    </span>
+                </p>
+            `;
+        } else {
+            userInfoContainer.style.display = 'none';
+            searchError.textContent = "No se encontró ningún usuario con ese documento.";
+        }
+    } catch (error) {
+        console.error("Error al consultar:", error);
+        searchError.textContent = "Error de conexión con el servidor.";
+    }
+});
 
 // TODO: Registrar el evento 'submit' en el formulario
 // Pista: messageForm.addEventListener('submit', handleFormSubmit);
