@@ -7,9 +7,9 @@ import { getTareas } from "./metodos/index.js";
 
 /**
  * ============================================
- * EJERCICIO DE MANIPULACIÓN DEL DOM
+ * EJERCICIO DE MANIPULACION DEL DOM
  * ============================================
- * Objetivo: Búsqueda de usuarios y registro de tareas
+ * Objetivo: Busqueda de usuarios y registro de tareas
  * Autor:
  * ============================================
  */
@@ -22,10 +22,6 @@ import { getTareas } from "./metodos/index.js";
  * Seleccionamos los elementos del DOM que necesitamos manipular.
  * Usamos getElementById para obtener referencias a los elementos únicos.
  */
-// Busqueda de usuarios 
-const userForm = document.getElementById('searchUserForm');
-const userDocInput = document.getElementById('searchUserId');
-const userDocError = document.getElementById('searchError');
 
 // ID del apartado para mostrar usuarios
 const mostrarUsuarios = document.getElementById('mostrarUsuarios');
@@ -37,17 +33,17 @@ const messageForm = document.getElementById('messageForm');
 const userNameInput = document.getElementById('userName');
 const userMessageInput = document.getElementById('userMessage');
 
-// Botón de envío
+// Boton de envio
 const submitBtn = document.getElementById('submitBtn');
 
 // Elementos para mostrar errores
 const userNameError = document.getElementById('userNameError');
 const userMessageError = document.getElementById('userMessageError');
 
-// Contenedor donde se mostrarán los mensajes
+// Contenedor donde se mostraran los mensajes
 const messagesContainer = document.getElementById('messagesContainer');
 
-// Estado vacío (mensaje que se muestra cuando no hay mensajes)
+// Estado vacio (mensaje que se muestra cuando no hay mensajes)
 const emptyState = document.getElementById('emptyState');
 
 // Contador de mensajes
@@ -56,10 +52,6 @@ const messageCount = document.getElementById('messageCount');
 // Variable para llevar el conteo de mensajes
 let totalMessages = 0;
 
-// Usamos selectores de ID (#) y clases (.)
-const searchUserForm = document.querySelector('#searchUserForm');
-const searchUserId = document.querySelector('#searchUserId');
-// Búsqueda de usuarios
 const userForm = document.querySelector('#searchUserForm');
 const userDocInput = document.querySelector('#searchUserId');
 const userDocError = document.querySelector('#searchError');
@@ -77,7 +69,7 @@ const taskDescriptionError = document.querySelector('#taskDescriptionError');
 const tasksTableBody = document.querySelector('#tasksTableBody');
 const taskCount = document.querySelector('#taskCount');
 
-// Estado de la aplicación
+// Estado de la aplicacion
 let usuarioEncontrado = null;
 let totalTareas = 0;
 
@@ -115,40 +107,7 @@ function agregarTareaATabla(usuario, titulo, descripcion) {
     if (emptyRow) {
         emptyRow.remove();
     }
-
-function mostrarUsers(usuarios){
-           // Crear elemento html (DOM) asignado a liID - Document
-        const liDocument = document.createElement("div");
-        // Usuario
-        const Usuario = document.createElement("div");
     
-        // Contenedor para el Documento y usuario
-        const contenedor = document.createElement("div");
-    
-        contenedor.classList.add("containUser");
-    
-        liDocument.textContent = usuarios.documento;
-        Usuario.textContent = usuarios.nombre;
-
-        contenedor.appendChild(Usuario);
-        contenedor.appendChild(liDocument);
-        mostrarUsuarios.appendChild(contenedor)
-}
-
-const Usuariosmostrar = async ()=>{
-    // usuarios
-    const usuarios = await getTareas();
-    
-    
-    usuarios.forEach(i =>{
-        mostrarUsers(i);
-    })
-    // appendChild
-    // textContent
-    // createElement
-    // classList
-}
-Usuariosmostrar()
     const fila = document.createElement('tr');
     fila.style.borderBottom = '1px solid #ddd';
 
@@ -173,6 +132,30 @@ Usuariosmostrar()
     totalTareas++;
     updateTaskCount();
 }
+
+// ============================================
+// 3.1 MOSTRAR USUARIOS (DB.JSON)
+// ============================================
+function mostrarUsers(usuarios){
+    const liDocument = document.createElement("div");
+    const Usuario = document.createElement("div");
+    const contenedor = document.createElement("div");
+
+    contenedor.classList.add("containUser");
+
+    liDocument.textContent = usuarios.documento;
+    Usuario.textContent = usuarios.nombre;
+
+    contenedor.appendChild(Usuario);
+    contenedor.appendChild(liDocument);
+    mostrarUsuarios.appendChild(contenedor);
+}
+
+const Usuariosmostrar = async ()=>{
+    const usuarios = await getTareas(); // Consulta a la BD
+    usuarios.forEach(i => mostrarUsers(i));
+}
+Usuariosmostrar();
 
 // ============================================
 // 4. MANEJO DE EVENTOS
@@ -233,7 +216,7 @@ async function handleUserSearch(event) {
     // Pista: event.preventDefault()
     
     // PASO 2: Validar el formulario
-    // Si no es válido, detener la ejecución (return)
+    // Si no es valido, detener la ejecucion (return)
     
     // PASO 3: Obtener los valores de los campos
     
@@ -254,18 +237,18 @@ async function handleUserSearch(event) {
  */
 //function handleInputChange() {
     // TODO: Implementar limpieza de errores al escribir
-    // Esta función se ejecuta cuando el usuario escribe en un campo
-    // Debe limpiar el error de ese campo específico
+    // Esta funcion se ejecuta cuando el usuario escribe en un campo
+    // Debe limpiar el error de ese campo especifico
 //}
 
 async function handleFormSubmit(event) {
-    event.preventDefault(); // Evita que la página se recargue
+    event.preventDefault(); // Evita que la pagina se recargue
 
-    // 1. Obtenemos los valores de los inputs que ya están declarados arriba
+    // 1. Obtenemos los valores de los inputs que ya estan declarados arriba
     const nombre = userNameInput.value;
     const documento = userMessageInput.value;
 
-    // 2. Validación básica
+    // 2. Validacion basica
     if (nombre.trim() === "" || documento.trim() === "") {
         alert("Por favor, completa todos los campos del registro.");
         showError(userDocError, 'Ingresa el documento del usuario');
@@ -360,12 +343,12 @@ taskTitle.addEventListener('input', handleTaskTitleInput);
 taskDescription.addEventListener('input', handleTaskDescriptionInput);
 
 // ============================================
-// 6. INICIALIZACIÓN
+// 6. INICIALIZACION
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function () {
     taskFieldset.disabled = true;
     updateTaskCount();
     console.log('✅ DOM completamente cargado');
-    console.log('📝 Aplicación de gestión de tareas iniciada');
+    console.log('📝 Aplicacion de gestion de tareas iniciada');
 });
