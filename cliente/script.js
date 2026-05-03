@@ -26,32 +26,6 @@ import { getTareas } from "./metodos/index.js";
 // ID del apartado para mostrar usuarios
 const mostrarUsuarios = document.getElementById('mostrarUsuarios');
 
-// Formulario
-const messageForm = document.getElementById('messageForm');
-
-// Campos de entrada
-const userNameInput = document.getElementById('userName');
-const userMessageInput = document.getElementById('userMessage');
-
-// Boton de envio
-const submitBtn = document.getElementById('submitBtn');
-
-// Elementos para mostrar errores
-const userNameError = document.getElementById('userNameError');
-const userMessageError = document.getElementById('userMessageError');
-
-// Contenedor donde se mostraran los mensajes
-const messagesContainer = document.getElementById('messagesContainer');
-
-// Estado vacio (mensaje que se muestra cuando no hay mensajes)
-const emptyState = document.getElementById('emptyState');
-
-// Contador de mensajes
-const messageCount = document.getElementById('messageCount');
-
-// Variable para llevar el conteo de mensajes
-let totalMessages = 0;
-
 const userForm = document.querySelector('#searchUserForm');
 const userDocInput = document.querySelector('#searchUserId');
 const userDocError = document.querySelector('#searchError');
@@ -82,11 +56,17 @@ function isValidInput(value) {
 }
 
 function showError(errorElement, message) {
-    errorElement.textContent = message;
+    if (errorElement) {
+        errorElement.textContent = message;
+    } else {
+        alert(message); // Respaldo visual si el elemento no existe en el HTML
+    }
 }
 
 function clearError(errorElement) {
-    errorElement.textContent = '';
+    if (errorElement) {
+        errorElement.textContent = '';
+    }
 }
 
 function clearTaskErrors() {
@@ -102,30 +82,94 @@ function updateTaskCount() {
 // 3. CREACIÓN DE ELEMENTOS
 // ============================================
 
-function agregarTareaATabla(usuario, titulo, descripcion) {
+function agregarTareaATabla(usuario, titulo, descripcion, taskId) {
     const emptyRow = document.querySelector('#emptyTasksRow');
     if (emptyRow) {
         emptyRow.remove();
     }
     
     const fila = document.createElement('tr');
-    fila.style.borderBottom = '1px solid #ddd';
 
     const celdaUsuario = document.createElement('td');
     celdaUsuario.textContent = usuario.nombre;
-    celdaUsuario.style.padding = '12px';
 
     const celdaTitulo = document.createElement('td');
     celdaTitulo.textContent = titulo;
-    celdaTitulo.style.padding = '12px';
 
     const celdaDescripcion = document.createElement('td');
     celdaDescripcion.textContent = descripcion;
-    celdaDescripcion.style.padding = '12px';
+
+    // --- NUEVO: Celda para el botón de acciones ---
+    const celdaAcciones = document.createElement('td');
+    celdaAcciones.className = 'table-actions';
+
+    // Botón Editar
+    const btnEditar = document.createElement('button');
+    btnEditar.textContent = 'Editar';
+    btnEditar.className = 'btn btn--warning';
+
+    btnEditar.addEventListener('click', async () => {
+        // Pedimos al usuario los nuevos datos (si cancela, retorna null)
+        const nuevoTitulo = prompt('Edita el título de la tarea:', celdaTitulo.textContent);
+        if (nuevoTitulo === null) return; 
+        
+        const nuevaDescripcion = prompt('Edita la descripción de la tarea:', celdaDescripcion.textContent);
+        if (nuevaDescripcion === null) return;
+
+        // Validamos que no los deje vacíos
+        if (nuevoTitulo.trim() === '' || nuevaDescripcion.trim() === '') {
+            alert('El título y la descripción no pueden estar vacíos.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: nuevoTitulo.trim(), description: nuevaDescripcion.trim() })
+            });
+
+            if (!response.ok) throw new Error('Error al actualizar en el servidor');
+
+            // Actualizamos la tabla en el DOM inmediatamente (RF-03)
+            celdaTitulo.textContent = nuevoTitulo.trim();
+            celdaDescripcion.textContent = nuevaDescripcion.trim();
+        } catch (error) {
+            alert('Hubo un error al intentar actualizar la tarea.');
+        }
+    });
+    
+    const btnEliminar = document.createElement('button');
+    btnEliminar.textContent = 'Eliminar';
+    btnEliminar.className = 'btn btn--danger';
+    
+    btnEliminar.addEventListener('click', async () => {
+        // Pedimos confirmación (Requisito del RF-04)
+        if (!confirm('¿Estás seguro de que deseas eliminar esta tarea?')) return;
+        
+        try {
+            // 1. La borramos de la base de datos de verdad
+            await fetch(`http://localhost:3000/tasks/${taskId}`, { method: 'DELETE' });
+            
+            // 2. La quitamos visualmente de la tabla
+            fila.remove();
+            totalTareas--;
+            updateTaskCount();
+            
+            if (totalTareas === 0) {
+                tasksTableBody.innerHTML = '<tr id="emptyTasksRow"><td colspan="4" style="text-align: center; padding: 24px; color: #9ca3af; font-style: italic;">No hay tareas registradas</td></tr>';
+            }
+        } catch (error) {
+            alert('Hubo un error al intentar eliminar la tarea.');
+        }
+    });
+    celdaAcciones.appendChild(btnEditar);
+    celdaAcciones.appendChild(btnEliminar);
 
     fila.appendChild(celdaUsuario);
     fila.appendChild(celdaTitulo);
     fila.appendChild(celdaDescripcion);
+    fila.appendChild(celdaAcciones);
 
     tasksTableBody.appendChild(fila);
 
@@ -158,6 +202,29 @@ const Usuariosmostrar = async ()=>{
 Usuariosmostrar();
 
 // ============================================
+// 3.2 CARGAR TAREAS DEL USUARIO (RF-01)
+// ============================================
+async function cargarTareasUsuario(userId) {
+    try {
+        const response = await fetch(`http://localhost:3000/tasks?userId=${userId}`);
+        const tareas = await response.json();
+        
+        // Limpiamos la tabla para que no se dupliquen las tareas
+        tasksTableBody.innerHTML = '';
+        totalTareas = 0;
+        
+        if (tareas.length === 0) {
+            tasksTableBody.innerHTML = '<tr id="emptyTasksRow"><td colspan="4" style="text-align: center; padding: 24px; color: #9ca3af; font-style: italic;">No hay tareas registradas</td></tr>';
+        } else {
+            tareas.forEach(tarea => agregarTareaATabla(usuarioEncontrado, tarea.title, tarea.description, tarea.id));
+        }
+        updateTaskCount();
+    } catch (error) {
+        console.error('Error al cargar las tareas:', error);
+    }
+}
+
+// ============================================
 // 4. MANEJO DE EVENTOS
 // ============================================
 
@@ -184,99 +251,26 @@ async function handleUserSearch(event) {
         );
     
         if (user) {
-                alert(`Usuario encontrado: ${user.nombre}`);
-                console.log('Usuario encontrado:', user);
-        } else {
-                showError(userDocError, 'Usuario no encontrado');
-            }
-        } catch (error) {
-            console.error('Error al conectar con el servidor:', error);
-            showError(userDocError, 'Error al conectar con el servidor');
-        }
-    }
-    
-    function handleInputChange() {
-        if (userDocInput.value.trim().length > 0) {
-            clearError(userDocError);
-        }
-    }
-    
-    userForm.addEventListener('submit', handleUserSearch);
-    userDocInput.addEventListener('input', handleInputChange);
-    
+            alert(`Usuario encontrado: ${user.nombre}`);
+            console.log('Usuario encontrado:', user);
 
-/**
- * Maneja el evento de envío del formulario
- * @param {Event} event - Evento del formulario
- */
-// function handleFormSubmit(event) {
-    // TODO: Implementar el manejador del evento submit
-    
-    // PASO 1: Prevenir el comportamiento por defecto del formulario
-    // Pista: event.preventDefault()
-    
-    // PASO 2: Validar el formulario
-    // Si no es valido, detener la ejecucion (return)
-    
-    // PASO 3: Obtener los valores de los campos
-    
-    // PASO 4: Crear el nuevo elemento de mensaje
-    // Llamar a createMessageElement con los valores obtenidos
-    
-    // PASO 5: Limpiar el formulario
-    // Pista: messageForm.reset()
-    
-    // PASO 6: Limpiar los errores
-    
-    // PASO 7: Opcional - Enfocar el primer campo para facilitar agregar otro mensaje
-    // Pista: userNameInput.focus()
-//}
-
-/**
- * Limpia los errores cuando el usuario empieza a escribir
- */
-//function handleInputChange() {
-    // TODO: Implementar limpieza de errores al escribir
-    // Esta funcion se ejecuta cuando el usuario escribe en un campo
-    // Debe limpiar el error de ese campo especifico
-//}
-
-async function handleFormSubmit(event) {
-    event.preventDefault(); // Evita que la pagina se recargue
-
-    // 1. Obtenemos los valores de los inputs que ya estan declarados arriba
-    const nombre = userNameInput.value;
-    const documento = userMessageInput.value;
-
-    // 2. Validacion basica
-    if (nombre.trim() === "" || documento.trim() === "") {
-        alert("Por favor, completa todos los campos del registro.");
-        showError(userDocError, 'Ingresa el documento del usuario');
-        return;
-    }
-
-    try {
-        const response = await fetch('http://localhost:3000/users');
-        const users = await response.json();
-
-        const user = users.find(
-            u => String(u.documento).trim() === documento
-        );
-
-        if (user) {
+            // 1. Guardamos el usuario para usarlo despues
             usuarioEncontrado = user;
 
+            // 2. Mostramos la informacion del usuario en la UI
             userInfoContainer.style.display = 'block';
             userInfoContainer.innerHTML =
                 '<strong>Usuario encontrado:</strong><br>' +
                 'Nombre: ' + user.nombre + '<br>' +
                 'Documento: ' + user.documento;
 
-            taskFieldset.disabled = false;
+            // 3. Cargamos las tareas previas del usuario (RF-01)
+            await cargarTareasUsuario(user.id);
+
         } else {
+            // Si no se encuentra, reseteamos todo
             usuarioEncontrado = null;
             userInfoContainer.style.display = 'none';
-            taskFieldset.disabled = true;
             showError(userDocError, 'Usuario no encontrado');
         }
     } catch (error) {
@@ -303,12 +297,11 @@ function handleTaskDescriptionInput() {
     }
 }
 
-function handleTaskSubmit(event) {
+async function handleTaskSubmit(event) {
     event.preventDefault();
 
     const titulo = taskTitle.value.trim();
     const descripcion = taskDescription.value.trim();
-
     clearTaskErrors();
 
     if (!usuarioEncontrado) {
@@ -316,19 +309,43 @@ function handleTaskSubmit(event) {
         return;
     }
 
+    let isValid = true;
     if (!isValidInput(titulo)) {
         showError(taskTitleError, 'Ingresa el título de la tarea');
-        return;
+        isValid = false;
     }
 
     if (!isValidInput(descripcion)) {
         showError(taskDescriptionError, 'Ingresa la descripción de la tarea');
-        return;
+        isValid = false;
     }
 
-    agregarTareaATabla(usuarioEncontrado, titulo, descripcion);
+    if (!isValid) return;
 
-    taskForm.reset();
+    const nuevaTarea = {
+        title: titulo,
+        description: descripcion,
+        completed: false,
+        userId: usuarioEncontrado.id
+    };
+
+    try {
+        const response = await fetch('http://localhost:3000/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevaTarea)
+        });
+
+        if (!response.ok) throw new Error('Error en la respuesta del servidor');
+
+        const tareaCreada = await response.json();
+        agregarTareaATabla(usuarioEncontrado, tareaCreada.title, tareaCreada.description, tareaCreada.id);
+        taskForm.reset();
+        alert('¡Tarea registrada exitosamente!');
+    } catch (error) {
+        console.error('Error al crear la tarea:', error);
+        alert('No se pudo registrar la tarea. Revisa la consola para más detalles.');
+    }
 }
 
 // ============================================
@@ -347,7 +364,6 @@ taskDescription.addEventListener('input', handleTaskDescriptionInput);
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function () {
-    taskFieldset.disabled = true;
     updateTaskCount();
     console.log('✅ DOM completamente cargado');
     console.log('📝 Aplicacion de gestion de tareas iniciada');

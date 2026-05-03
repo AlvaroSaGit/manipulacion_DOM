@@ -251,8 +251,8 @@ body {
 }
 
 .form__input:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-primary-lighter);
+    border-color: var(--color-gray-500);
+    box-shadow: 0 0 0 3px var(--color-gray-200);
 }
 
 .form__input::placeholder {
@@ -305,24 +305,41 @@ body {
 }
 
 .btn--primary {
-    background-color: var(--color-primary);
+    background-color: var(--color-gray-800);
     color: white;
-    box-shadow: var(--shadow-sm);
 }
 
 .btn--primary:hover {
-    background-color: var(--color-primary-dark);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
+    background-color: var(--color-gray-600);
 }
 
 .btn--primary:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-sm);
+    background-color: var(--color-gray-900);
 }
 
 .btn--primary:focus-visible {
-    box-shadow: 0 0 0 3px var(--color-primary-lighter);
+    box-shadow: 0 0 0 3px var(--color-gray-300);
+}
+
+.btn--warning {
+    background-color: var(--color-gray-200);
+    color: var(--color-text-primary);
+}
+
+.btn--warning:hover {
+    background-color: var(--color-gray-300);
+}
+
+.btn--danger {
+    padding: 6px 12px;
+    font-size: var(--font-size-sm);
+    background-color: var(--color-gray-100);
+    color: var(--color-error);
+}
+
+.btn--danger:hover {
+    background-color: var(--color-error);
+    color: white;
 }
 
 .btn__icon {
@@ -381,10 +398,10 @@ body {
 #tasksTable th {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-primary-dark);
+    color: var(--color-gray-800);
     text-transform: uppercase;
     padding: var(--spacing-md);
-    border-bottom: 2px solid var(--color-primary-light);
+    border-bottom: 2px solid var(--color-gray-300);
     background-color: var(--color-surface);
 }
 
@@ -399,6 +416,12 @@ body {
     text-align: left;
 }
 
+/* Agrupa los botones de acciones para que queden lado a lado */
+.table-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
 /* quita el borde de abajo a la ultima fila para que se vea mas limpio */
 #tasksTable tr:last-child td {
     border-bottom: none;
@@ -406,7 +429,7 @@ body {
 
 /* cambia el color de fondo de la fila cuando pasas el mouse por encima */
 #tasksTable tr:hover td {
-    background-color: var(--color-primary-lighter);
+    background-color: var(--color-gray-50);
 }
 
 /* fila que aparece cuando no hay tareas */
@@ -425,9 +448,9 @@ body {
 .user-info {
     margin-top: var(--spacing-lg);
     padding: var(--spacing-lg);
-    background-color: var(--color-primary-lighter);
+    background-color: var(--color-gray-100);
     border-radius: var(--radius-md);
-    border-left: 4px solid var(--color-primary);
+    border-left: 4px solid var(--color-gray-800);
     /* animacion suave para que aparezca desde arriba */
     animation: slideIn var(--transition-slow) ease-out;
 }
