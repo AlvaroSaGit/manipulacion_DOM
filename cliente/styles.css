@@ -153,10 +153,49 @@ body {
     font-weight: var(--font-weight-normal);
 }
 
-.contenedorUsuarios{
-    width: 200px;
-    height: 200px;
-    background-color: red;
+/* ============================================
+   TARJETAS DE USUARIOS
+   ============================================ */
+
+#mostrarUsuarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.containUser {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    background: var(--color-surface);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+}
+
+.containUser:hover {
+    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Estilos para el div del nombre (primer hijo de containUser) */
+.containUser div:first-child {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilos para el div del documento (segundo hijo de containUser) */
+.containUser div:last-child {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
 }
 
 /* ============================================

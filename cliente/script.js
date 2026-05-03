@@ -203,9 +203,9 @@ function createMessageElement(userName, message) {
 
 function mostrarUsers(usuarios){
            // Crear elemento html (DOM) asignado a liID - Document
-        const liDocument = document.createElement("li");
+        const liDocument = document.createElement("div");
         // Usuario
-        const Usuario = document.createElement("li");
+        const Usuario = document.createElement("div");
     
         // Contenedor para el Documento y usuario
         const contenedor = document.createElement("div");
