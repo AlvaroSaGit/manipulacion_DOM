@@ -1,0 +1,22 @@
+/* ============================================
+   LAYOUT PRINCIPAL
+   ============================================ */
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+
+
+
+
+/* contenedor de la tabla para que no se salga en moviles */
+.table-container {
+    /* permite mover la tabla a los lados si es muy ancha */
+    overflow-x: auto;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-gray-100);
+}
