@@ -1,10 +1,6 @@
-export const post = async (endpoint, data) => {
+export const remove = async (endpoint) => {
     const response = await fetch(`http://localhost:3000/${endpoint}`, {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify(data)
+        method: 'DELETE'
     });
     if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);

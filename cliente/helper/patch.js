@@ -1,9 +1,7 @@
-export const post = async (endpoint, data) => {
+export const patch = async (endpoint, data) => {
     const response = await fetch(`http://localhost:3000/${endpoint}`, {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-        },
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     });
     if (!response.ok) {

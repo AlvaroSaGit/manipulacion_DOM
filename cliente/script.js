@@ -1,37 +1,6 @@
-import { postUsers } from "./metodos/index.js";
-
-import { get } from "./helper/index.js";
-import { getTareas } from "./metodos/index.js";
-// ... los demás imports que ya tengas
-
-/**
- * Notas sobre como leer este codigo:
- * 
- * Veras que las funciones tienen unos comentarios especiales arriba. Usamos JSDoc para 
- * dejar notas claras sobre que hace cada cosa.
- * 
- * - @param: Simplemente nos dice que informacion le tenemos que pasar a la funcion.
- * - @returns: Nos avisa que resultado nos va a devolver la funcion cuando termine.
- * 
- * Escribirlo asi ayuda a que VS Code nos entienda y nos de autocompletado al programar.
- */
-
-/**
- * Ejercicio principal de manipulacion del DOM.
- * Aqui controlamos la busqueda de los usuarios y como se registran sus tareas en la pantalla.
- */
-
-// ---- 1 - SELECCION DE ELEMENTOS DEL DOM ----
-
-/**
- * Seleccionamos los elementos del DOM que necesitamos manipular.
- * Usamos getElementById para obtener referencias a los elementos unicos.
- */
-
-// ID del apartado para mostrar usuarios
-const mostrarUsuarios = document.getElementById('mostrarUsuarios');
-
-import { get } from "./helper/index.js";
+import { get, post, isValidInput, showError, clearError } from "./helper/index.js";
+import { Usuariosmostrar } from "./componentes/usuarioUI.js";
+import { agregarTareaATabla } from "./componentes/tareaUI.js";
 
 /**
  * Notas sobre como leer este codigo:
@@ -83,20 +52,6 @@ const taskTitleError = document.querySelector('#taskTitleError');
 const taskDescription = document.querySelector('#taskDescription');
 const taskDescriptionError = document.querySelector('#taskDescriptionError');
 
-// Tabla de tareas (Apunta al <tbody> en el HTML, el contenedor donde viviran las filas)
-const tasksTableBody = document.querySelector('#tasksTableBody');
-const taskCount = document.querySelector('#taskCount');
-
-// Estado de la aplicacion
-let usuarioEncontrado = null;
-let totalTareas = 0;
-
-// ---- 2 - FUNCIONES AUXILIARES ----
-
-/**
- * Verifica si un campo de texto contiene informacion valida (no solo espacios en blanco)
- * @param {string} value - El texto a evaluar
- * @returns {boolean} - true si es valido, false si esta vacio
 // Elementos de la tabla de tareas
 const tasksTableBody = document.querySelector('#tasksTableBody');
 const taskCount = document.querySelector('#taskCount');
@@ -119,42 +74,6 @@ let totalTareas = 0;
 // ================================
 
 /**
- * Verifica si un texto ingresado es valido.
- * Un valor es valido si, despues de quitar espacios, aun contiene caracteres.
- *
- * @param {string} value - Texto recibido desde un input
- * @returns {boolean} - true si el texto tiene contenido, false si esta vacio
- */
-function isValidInput(value) {
-    return value.trim().length > 0;
-}
-
-/**
- * Muestra un mensaje de error en la interfaz. Si no encuentra el elemento, usa un alert()
- * @param {HTMLElement} errorElement - El contenedor donde se inyectara el mensaje
- * @param {string} message - El mensaje de advertencia
- * Muestra un mensaje de error dentro de un elemento del DOM.*/
-function showError(errorElement, message) {
-    if (errorElement) {
-        errorElement.textContent = message;
-    } else {
-        // Respaldo visual si el elemento no existe en el HTML
-        alert(message);
-    }
-}
-
-/**
- * Limpia el contenido de un contenedor de error.
- *
- * @param {HTMLElement} errorElement - Elemento visual donde estaba el mensaje
- */
-function clearError(errorElement) {
-    if (errorElement) {
-        errorElement.textContent = '';
-    }
-}
-
-/**
  * Limpia todos los errores relacionados con el formulario de tareas.
  */
 function clearTaskErrors() {
@@ -170,129 +89,6 @@ function updateTaskCount() {
     taskCount.textContent = `${totalTareas} ${totalTareas === 1 ? 'tarea' : 'tareas'}`;
 }
 
-// ---- 3 - CREACION DE ELEMENTOS ----
-
-/**
- * Crea y renderiza una nueva fila dentro de la tabla de tareas
- * @param {Object} usuario - Los datos del usuario (para mostrar a quien pertenece)
- * @param {string} titulo - El titulo principal de la tarea
- * @param {string} descripcion - Los detalles de la tarea
- * @param {string} taskId - El identificador unico generado por la base de datos
- */
-function agregarTareaATabla(usuario, titulo, descripcion, taskId) {
-    // Elimina el mensaje de "No hay tareas" si la tabla estaba vacia
-    const emptyRow = document.querySelector('#emptyTasksRow');
-    if (emptyRow) {
-        emptyRow.remove();
-    }
-    
-    // Armamos la fila (tr) que sostendra toda la informacion en la tabla
-    const fila = document.createElement('tr');
-
-    // Vamos creando una a una las celdas (td) y llenandolas con los textos correspondientes
-    const celdaUsuario = document.createElement('td');
-    celdaUsuario.textContent = usuario.nombre;
-
-    const celdaTitulo = document.createElement('td');
-    celdaTitulo.textContent = titulo;
-
-    const celdaDescripcion = document.createElement('td');
-    celdaDescripcion.textContent = descripcion;
-
-    // Contenedor de botones de acciones (Editar y Eliminar)
-    const celdaAcciones = document.createElement('td');
-    celdaAcciones.className = 'table-actions';
-
-    // --- Logica del Boton Editar ---
-    const btnEditar = document.createElement('button');
-    btnEditar.textContent = 'Editar';
-    btnEditar.className = 'btn btn--warning';
-
-    btnEditar.addEventListener('click', async () => {
-        // Solicitamos los nuevos datos mediante ventanas nativas (si cancela, retorna null)
-        const nuevoTitulo = prompt('Edita el titulo de la tarea:', celdaTitulo.textContent);
-        if (nuevoTitulo === null) return; 
-        
-        const nuevaDescripcion = prompt('Edita la descripcion de la tarea:', celdaDescripcion.textContent);
-        if (nuevaDescripcion === null) return;
-
-        // Validamos que no los deje vacios
-        if (nuevoTitulo.trim() === '' || nuevaDescripcion.trim() === '') {
-            alert('El titulo y la descripcion no pueden estar vacios.');
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: nuevoTitulo.trim(), description: nuevaDescripcion.trim() })
-            });
-
-            if (!response.ok) throw new Error('Error al actualizar en el servidor');
-
-            // Reflejamos los cambios en el DOM inmediatamente para evitar recargar la pagina
-            celdaTitulo.textContent = nuevoTitulo.trim();
-            celdaDescripcion.textContent = nuevaDescripcion.trim();
-        } catch (error) {
-            alert('Hubo un error al intentar actualizar la tarea.');
-        }
-    });
-    
-    // --- Logica del Boton Eliminar ---
-    const btnEliminar = document.createElement('button');
-    btnEliminar.textContent = 'Eliminar';
-    btnEliminar.className = 'btn btn--danger';
-    
-    btnEliminar.addEventListener('click', async () => {
-        // Confirmacion de seguridad antes de modificar la base de datos
-        if (!confirm('¿Estas seguro de que deseas eliminar esta tarea?')) return;
-        
-        try {
-            // 1. La borramos de la base de datos de verdad
-            await fetch(`http://localhost:3000/tasks/${taskId}`, { method: 'DELETE' });
-            
-            // 2. La quitamos visualmente de la tabla
-            fila.remove();
-            totalTareas--;
-            updateTaskCount();
-            
-            if (totalTareas === 0) {
-                tasksTableBody.innerHTML = '<tr id="emptyTasksRow"><td colspan="4" style="text-align: center; padding: 24px; color: #9ca3af; font-style: italic;">No hay tareas registradas</td></tr>';
-            }
-        } catch (error) {
-            alert('Hubo un error al intentar eliminar la tarea.');
-        }
-    });
-    
-    // appendChild significa "agregar como hijo". Es la forma de meter un elemento dentro de otro.
-    // Aqui metemos los botones adentro de la celda de acciones.
-    celdaAcciones.appendChild(btnEditar);
-    celdaAcciones.appendChild(btnEliminar);
-
-    // Luego metemos todas las celdas adentro de la fila (tr)
-    fila.appendChild(celdaUsuario);
-    fila.appendChild(celdaTitulo);
-    fila.appendChild(celdaDescripcion);
-    fila.appendChild(celdaAcciones);
-
-    // Y finalmente, pegamos la fila completa adentro del cuerpo de la tabla en el HTML
-    tasksTableBody.appendChild(fila);
-
-    totalTareas++;
-    updateTaskCount();
-}
-
-// ---- 3.1 - MOSTRAR USUARIOS (DB.JSON) ----
-
-/**
- * Crea la tarjeta visual para presentar un usuario en la parte superior
- * @param {Object} usuarios - La informacion extraida de la base de datos
- */
-function mostrarUsers(usuarios){
-    // Preparamos las cajas (divs) que le daran forma a la tarjeta visual del usuario
-    const liDocument = document.createElement("div");
-    const Usuario = document.createElement("div");
 /**
  * Renderiza una fila vacia cuando no existen tareas registradas.
  */
@@ -315,230 +111,11 @@ function limpiarTablaTareas() {
     updateTaskCount();
 }
 
-// ================================
-// 4. MOSTRAR USUARIOS
-// ================================
 
-/**
- * Crea una tarjeta visual sencilla para mostrar un usuario en pantalla.
- *
- * @param {Object} usuario - Objeto con la informacion del usuario
- * @param {string} usuario.nombre - Nombre del usuario
- * @param {string} usuario.documento - Documento del usuario
- */
-function mostrarUsers(usuario) {
-    const liDocument = document.createElement("div");
-    const usuarioNombre = document.createElement("div");
-    const contenedor = document.createElement("div");
-
-    contenedor.classList.add("containUser");
-
-    liDocument.textContent = usuarios.documento;
-    Usuario.textContent = usuarios.nombre;
-
-    contenedor.appendChild(Usuario);
-    liDocument.textContent = usuario.documento;
-    usuarioNombre.textContent = usuario.nombre;
-
-    contenedor.appendChild(usuarioNombre);
-    contenedor.appendChild(liDocument);
-    mostrarUsuarios.appendChild(contenedor);
-}
-
-/**
- * Funcion de inicializacion que consulta todos los usuarios a la API
- * para renderizarlos apenas entra a la aplicacion
- */
-const Usuariosmostrar = async ()=>{
-    const usuarios = await getTareas();
-    usuarios.forEach(i => mostrarUsers(i));
-}
-Usuariosmostrar();
-
-// ---- 3.2 - CARGAR TAREAS DEL USUARIO ----
-/**
- * Solicita a la API todas las tareas asociadas a un usuario especifico y las dibuja en tabla
- * @param {string} userId - El ID interno del usuario
- */
-async function cargarTareasUsuario(userId) {
-    try {
-        const response = await fetch(`http://localhost:3000/tasks?userId=${userId}`);
-        const tareas = await response.json();
-        
-        // Limpiamos la tabla para que no se dupliquen las tareas
-        tasksTableBody.innerHTML = '';
-        totalTareas = 0;
-        
-        if (tareas.length === 0) {
-            tasksTableBody.innerHTML = '<tr id="emptyTasksRow"><td colspan="4" style="text-align: center; padding: 24px; color: #9ca3af; font-style: italic;">No hay tareas registradas</td></tr>';
-        } else {
-            tareas.forEach(tarea => agregarTareaATabla(usuarioEncontrado, tarea.title, tarea.description, tarea.id));
-        }
-        updateTaskCount();
-    } catch (error) {
-        console.error('Error al cargar las tareas:', error);
-    }
-}
-
-// ---- 4 - MANEJO DE EVENTOS ----
-
-/**
- * Ejecuta la busqueda de un usuario mediante su numero de documento en la base de datos.
- * Si existe, almacena el usuario activo y dispara la busqueda de sus tareas.
- * @param {Event} event - El evento de envio del formulario
- * Consulta todos los usuarios desde la API y los renderiza en el contenedor superior.
- *
- * @returns {Promise<void>}
- */
-async function Usuariosmostrar() {
-    try {
-        const usuarios = await get('users');
-        mostrarUsuarios.innerHTML = '';
-
-        usuarios.forEach(usuario => {
-            mostrarUsers(usuario);
-        });
-    } catch (error) {
-        console.error('Error al mostrar usuarios:', error);
-    }
-}
 
 // ================================
-// 5. TABLA DE TAREAS
+// 5. CARGA DE TAREAS
 // ================================
-
-/**
- * Crea una nueva fila en la tabla de tareas y agrega botones de editar y eliminar.
- *
- * @param {Object|null} usuario - Usuario al que pertenece la tarea
- * @param {string} titulo - Titulo de la tarea
- * @param {string} descripcion - Descripcion de la tarea
- * @param {string} taskId - ID unico de la tarea en la base de datos
- */
-function agregarTareaATabla(usuario, titulo, descripcion, taskId) {
-    try {
-        // Si existe la fila de "No hay tareas", la quitamos para insertar tareas reales
-        const emptyRow = document.querySelector('#emptyTasksRow');
-        if (emptyRow) {
-            emptyRow.remove();
-        }
-
-        // Creamos la fila principal
-        const fila = document.createElement('tr');
-        fila.style.borderBottom = '1px solid #ddd';
-
-        // Celda del usuario
-        const celdaUsuario = document.createElement('td');
-        celdaUsuario.textContent = usuario?.nombre ?? 'Sin usuario';
-        celdaUsuario.style.padding = '12px';
-
-        // Celda del titulo
-        const celdaTitulo = document.createElement('td');
-        celdaTitulo.textContent = titulo ?? '';
-        celdaTitulo.style.padding = '12px';
-
-        // Celda de descripcion
-        const celdaDescripcion = document.createElement('td');
-        celdaDescripcion.textContent = descripcion ?? '';
-        celdaDescripcion.style.padding = '12px';
-
-        // Celda para botones de accion
-        const celdaAcciones = document.createElement('td');
-        celdaAcciones.style.padding = '12px';
-        celdaAcciones.className = 'table-actions';
-
-        // Boton editar
-        const btnEditar = document.createElement('button');
-        btnEditar.textContent = 'Editar';
-        btnEditar.className = 'btn btn--warning';
-        btnEditar.style.marginRight = '8px';
-
-        btnEditar.addEventListener('click', async () => {
-            const nuevoTitulo = prompt('Edita el titulo de la tarea:', celdaTitulo.textContent);
-            if (nuevoTitulo === null) return;
-
-            const nuevaDescripcion = prompt('Edita la descripcion de la tarea:', celdaDescripcion.textContent);
-            if (nuevaDescripcion === null) return;
-
-            if (nuevoTitulo.trim() === '' || nuevaDescripcion.trim() === '') {
-                alert('El titulo y la descripcion no pueden estar vacios.');
-                return;
-            }
-
-            try {
-                const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: nuevoTitulo.trim(),
-                        description: nuevaDescripcion.trim()
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error al actualizar en el servidor');
-                }
-
-                // Reflejamos el cambio en el DOM sin recargar la pagina
-                celdaTitulo.textContent = nuevoTitulo.trim();
-                celdaDescripcion.textContent = nuevaDescripcion.trim();
-            } catch (error) {
-                console.error('Error al editar tarea:', error);
-                alert('Hubo un error al intentar actualizar la tarea.');
-            }
-        });
-
-        // Boton eliminar
-        const btnEliminar = document.createElement('button');
-        btnEliminar.textContent = 'Eliminar';
-        btnEliminar.className = 'btn btn--danger';
-
-        btnEliminar.addEventListener('click', async () => {
-            const confirmado = confirm('¿Estas seguro de que deseas eliminar esta tarea?');
-            if (!confirmado) return;
-
-            try {
-                const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-                    method: 'DELETE'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error al eliminar en el servidor');
-                }
-
-                // Eliminamos la fila visualmente y actualizamos el contador
-                fila.remove();
-                totalTareas--;
-                updateTaskCount();
-
-                if (totalTareas === 0) {
-                    renderEmptyTasksRow();
-                }
-            } catch (error) {
-                console.error('Error al eliminar tarea:', error);
-                alert('Hubo un error al intentar eliminar la tarea.');
-            }
-        });
-
-        // Insertamos botones dentro de la celda de acciones
-        celdaAcciones.appendChild(btnEditar);
-        celdaAcciones.appendChild(btnEliminar);
-
-        // Insertamos todas las celdas dentro de la fila
-        fila.appendChild(celdaUsuario);
-        fila.appendChild(celdaTitulo);
-        fila.appendChild(celdaDescripcion);
-        fila.appendChild(celdaAcciones);
-
-        // Finalmente agregamos la fila al tbody
-        tasksTableBody.appendChild(fila);
-
-        totalTareas++;
-        updateTaskCount();
-    } catch (error) {
-        console.error('Error al renderizar tarea:', error);
-    }
-}
 
 /**
  * Consulta todas las tareas desde la API y luego filtra en JavaScript
@@ -554,13 +131,8 @@ async function cargarTareasUsuario(userId) {
     try {
         const userIdNormalizado = String(userId).trim();
 
-        const response = await fetch('http://localhost:3000/tasks');
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const tareas = await response.json();
+        // Usamos nuestro helper GET
+        const tareas = await get('tasks');
         console.log('Tareas recibidas:', tareas);
 
         limpiarTablaTareas();
@@ -585,7 +157,19 @@ async function cargarTareasUsuario(userId) {
                 usuarioEncontrado,
                 tarea.title,
                 tarea.description,
-                tarea.id
+                tarea.id,
+                tasksTableBody,
+                {
+                    onTareaAgregada: () => {
+                        totalTareas++;
+                        updateTaskCount();
+                    },
+                    onTareaEliminada: () => {
+                        totalTareas--;
+                        updateTaskCount();
+                        if (totalTareas === 0) renderEmptyTasksRow();
+                    }
+                }
             );
         });
     } catch (error) {
@@ -628,12 +212,8 @@ async function handleUserSearch(event) {
     }
     
     try {
-        const response = await fetch('http://localhost:3000/users');
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const users = await response.json();
+        // Usamos nuestro helper GET
+        const users = await get('users');
         console.log('Usuarios recibidos:', users);
 
         const user = users.find(
@@ -745,23 +325,26 @@ async function handleTaskSubmit(event) {
     };
 
     try {
-        const response = await fetch('http://localhost:3000/tasks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(nuevaTarea)
-        });
-
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
-        }
-
-        const tareaCreada = await response.json();
+        // Usamos nuestro helper POST
+        const tareaCreada = await post('tasks', nuevaTarea);
 
         agregarTareaATabla(
             usuarioEncontrado,
             tareaCreada.title,
             tareaCreada.description,
-            tareaCreada.id
+            tareaCreada.id,
+            tasksTableBody,
+            {
+                onTareaAgregada: () => {
+                    totalTareas++;
+                    updateTaskCount();
+                },
+                onTareaEliminada: () => {
+                    totalTareas--;
+                    updateTaskCount();
+                    if (totalTareas === 0) renderEmptyTasksRow();
+                }
+            }
         );
 
         taskForm.reset();
@@ -801,11 +384,12 @@ function init() {
     taskTitle.addEventListener('input', handleTaskTitleInput);
     taskDescription.addEventListener('input', handleTaskDescriptionInput);
 
-    Usuariosmostrar();
+    // Le pasamos el elemento visual donde queremos que pinte la lista
+    Usuariosmostrar(mostrarUsuarios);
 
     console.log('✅ DOM completamente cargado');
     console.log('📝 Aplicacion de gestion de tareas iniciada');
-}}
+}
 /**
  * Ejecuta la inicializacion en el momento correcto.
  *
