@@ -110,6 +110,27 @@
       "completed": false,
       "userId": "1",
       "id": "31us9EEe_H0"
+    },
+    {
+      "title": "holaaaaaaaaa",
+      "description": "tarea terminada",
+      "completed": false,
+      "userId": "1",
+      "id": "HDnlZCbiV1g"
+    },
+    {
+      "title": "proyecto",
+      "description": "50% terminado",
+      "completed": false,
+      "userId": "1",
+      "id": "xnCNueOGkic"
+    },
+    {
+      "title": "trabajo-sena",
+      "description": "terminado",
+      "completed": false,
+      "userId": "1",
+      "id": "wmWUAJgYrH8"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

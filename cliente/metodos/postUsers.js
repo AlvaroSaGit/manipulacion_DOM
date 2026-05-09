@@ -5,7 +5,7 @@ export const postUsers = async (nombre, documento) => {
     const nuevoUsuario = {
         name: nombre,
         document: documento,
-        active: true 
+        activo: true 
     };
 
     return await Post('users', nuevoUsuario);
