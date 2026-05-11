@@ -1,0 +1,10 @@
+/* ============================================
+   UTILIDADES
+   ============================================ */
+
+.hidden {
+    display: none !important;
+}
+.fade-out {
+    animation: fadeOut var(--transition-base) ease-out forwards;
+}
