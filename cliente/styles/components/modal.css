@@ -1,0 +1,123 @@
+/* Variables de color para fácil personalización */
+:root {
+    --bg-modal: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #4b5563;
+    --border-color: #e5e7eb;
+    --input-bg: #f9fafb;
+    --primary: #2563eb;
+    /* Azul moderno */
+    --primary-hover: #1d4ed8;
+    --secondary-bg: #f3f4f6;
+    --secondary-hover: #e5e7eb;
+    --radius: 12px;
+    --transition: all 0.2s ease-in-out;
+}
+
+/* Estilos para el elemento <dialog> */
+#editTaskModal {
+    border: none;
+    border-radius: var(--radius);
+    margin-left: 400px;
+    padding: 24px;
+    width: 100%;
+    max-width: 450px;
+    background-color: var(--bg-modal);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Animación y difuminado del fondo del modal (backdrop) */
+#editTaskModal::backdrop {
+    background-color: rgba(15, 23, 42, 0.3);
+}
+
+/* Estructura del formulario */
+#editTaskForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#editTaskForm h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Etiquetas (Labels) */
+#editTaskForm label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: -10px;
+    /* Acerca la etiqueta al input */
+}
+
+/* Inputs y Textareas */
+#editTaskForm input[type="text"],
+#editTaskForm textarea {
+    width: 100%;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: var(--transition);
+    outline: none;
+    resize: none;
+    /* Evita que deformen el diseño del textarea */
+}
+
+/* Estado Focus para los inputs */
+#editTaskForm input[type="text"]:focus,
+#editTaskForm textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 213, 0.15);
+    background-color: #fff;
+}
+
+/* Contenedor de botones */
+#editTaskForm div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* Estilo base para los botones */
+#editTaskForm button {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+}
+
+/* Botón Cancelar (Secundario) */
+#editTaskForm button[type="button"] {
+    background-color: var(--secondary-bg);
+    color: var(--text-muted);
+}
+
+#editTaskForm button[type="button"]:hover {
+    background-color: var(--secondary-hover);
+    color: var(--text-main);
+}
+
+/* Botón Guardar (Primario) */
+#editTaskForm button[type="submit"] {
+    background-color: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+#editTaskForm button[type="submit"]:hover {
+    background-color: var(--primary-hover);
+}

@@ -1,13 +1,19 @@
-export const Post = async (url, body) => {
-    return await fetch(`http://localhost:3000/${url}`, {
+/**
+ * realiza una peticion post para crear un nuevo registro en la base de datos.
+ * @param {string} endpoint - la ruta de la api donde se guardara (ej: 'tasks').
+ * @param {object} data - la informacion del objeto que queremos guardar.
+ * @returns {promise<any>} - la respuesta del servidor con el objeto ya creado.
+ */
+export const post = async (endpoint, data) => {
+    const response = await fetch(`http://localhost:3000/${endpoint}`, {
         method: 'POST',
-        body: JSON.stringify(body),
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         },
-    })
-        .then((response) => response.json())
-        .then((json) => console.log(json));
-        console.log(json);
-        return json; // Devolvemos el resultado
+        body: JSON.stringify(data)
+    });
+    if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+    }
+    return await response.json();
 };
