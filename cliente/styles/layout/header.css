@@ -11,12 +11,16 @@
     box-shadow: var(--shadow-md);
 }
 
+
+
 .header__title {
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
     color: var(--color-primary);
     margin-bottom: var(--spacing-sm);
     letter-spacing: -0.02em;
+
+
 }
 
 .header__subtitle {

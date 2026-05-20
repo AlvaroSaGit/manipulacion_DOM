@@ -4,8 +4,10 @@
  * @param {object} data - los campos especificos que queremos cambiar.
  * @returns {promise<any>} - la confirmacion y el registro actualizado.
  */
+
+import {ip} from "./ip.js";
 export const patch = async (endpoint, data) => {
-    const response = await fetch(`http://10.5.225.158:3000/${endpoint}`, {
+    const response = await fetch(`http://${ip}:3000/${endpoint}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

@@ -17,12 +17,16 @@
 @import url('./components/user-info.css');
 @import url('./components/mensajes.css');
 @import url('./components/modal.css');
+@import url('./components/modal-eliminar.css');
 
 
 
 @import url('./utilities/helpers.css');
 @import url('./utilities/responsive.css');
 
+<<<<<<< HEAD
 body {
     font-family: 'Roboto', sans-serif !important;
 }
+=======
+>>>>>>> actualizacion/Alert
