@@ -4,7 +4,7 @@
 #editTaskModal {
     border: none;
     border-radius: var(--radius);
-    margin-left: 400px;
+    margin:  0 auto;
     padding: 24px;
     width: 100%;
     max-width: 450px;

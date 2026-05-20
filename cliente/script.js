@@ -2,6 +2,7 @@ import { get, post, isValidInput, showError, clearError } from "./helper/index.j
 import { Usuariosmostrar } from "./componentes/usuarioUI.js";
 import { agregarTareaATabla } from "./componentes/tareaUI.js";
 import { inicializarModalEdicion } from "./componentes/modalEditar.js";
+import { inicializarModalEliminar } from './componentes/modalEliminar.js';
 
 /**
  * Notas sobre como leer este codigo:
@@ -402,6 +403,7 @@ function init() {
     // Le pasamos el elemento visual donde queremos que pinte la lista
     Usuariosmostrar(mostrarUsuarios);
     inicializarModalEdicion(showToast);
+    inicializarModalEliminar(showToast);
 
     console.log('✅ DOM completamente cargado');
     console.log('📝 Aplicacion de gestion de tareas iniciada');
