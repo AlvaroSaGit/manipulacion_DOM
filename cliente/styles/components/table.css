@@ -1,0 +1,34 @@
+/* estilos basicos de la tabla */
+#tasksTable {
+    width: 100%;
+    /* quita los espacios dobles entre los bordes de las celdas */
+    border-collapse: collapse;
+}
+
+/* estilos para los encabezados de la tabla (th) */
+#tasksTable th {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+    text-transform: uppercase;
+    padding: var(--spacing-md);
+    border-bottom: 2px solid var(--color-gray-300);
+    background-color: var(--color-surface);
+}
+
+/* estilos para las celdas normales de la tabla (td) */
+#tasksTable td {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-gray-100);
+    /* hace que el cambio de color al pasar el mouse sea suave */
+    transition: background-color var(--transition-fast);
+    text-align: left;
+}
+
+/* Agrupa los botones de acciones para que queden lado a lado */
+.table-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}

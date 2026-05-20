@@ -1,0 +1,103 @@
+
+/* Estilos base del componente Dialog */
+.modal {
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background-color: #ffffff;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* Animación de entrada nativa */
+.modal[open] {
+  animation: modalAparecer 0.25s ease-out forwards;
+}
+
+/* El fondo oscuro detrás del modal (Nativo de HTML5) */
+.modal::backdrop {
+  background-color: rgba(15, 23, 42, 0.6); /* Slate oscuro */
+}
+
+/* Contenedor del formulario interno */
+.modal__content {
+  padding: 28px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Título */
+.modal__content h3 {
+  margin: 0 0 10px 0;
+  color: #0f172a; /* Azul pizarra muy oscuro */
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* Texto descriptivo */
+.modal__content p {
+  margin: 0 0 28px 0;
+  color: #475569; /* Gris corporativo suave */
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Contenedor de botones alineados a la derecha */
+.modal__content > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Estilos comunes de los botones */
+.modal__content button {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Botón Cancelar (Estilo secundario) */
+#cancelDeleteTaskBtn {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+#cancelDeleteTaskBtn:hover {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+/* Botón Eliminar (Estilo Alerta/Peligro) */
+#confirmDeleteTaskBtn {
+  background-color: #ef4444; /* Rojo moderno vibrante */
+  color: #ffffff;
+}
+
+#confirmDeleteTaskBtn:hover {
+  background-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+#confirmDeleteTaskBtn:disabled {
+  background-color: #fca5a5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Animación keyframe */
+@keyframes modalAparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
