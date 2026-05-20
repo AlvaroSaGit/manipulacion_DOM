@@ -1,6 +1,7 @@
 import { get, post, isValidInput, showError, clearError } from "./helper/index.js";
 import { Usuariosmostrar } from "./componentes/usuarioUI.js";
 import { agregarTareaATabla } from "./componentes/tareaUI.js";
+import { inicializarModalEdicion } from "./componentes/modalEditar.js";
 
 /**
  * Notas sobre como leer este codigo:
@@ -36,7 +37,7 @@ import { agregarTareaATabla } from "./componentes/tareaUI.js";
  */
 
 // Contenedor donde se muestran los usuarios disponibles
-const mostrarUsuarios = document.getElementById('mostrarUsuarios');
+const mostrarUsuarios = document.querySelector('#mostrarUsuarios');
 
 // Formulario de busqueda de usuario
 const userForm = document.querySelector('#searchUserForm');
@@ -73,6 +74,19 @@ let totalTareas = 0;
 // 3. FUNCIONES AUXILIARES
 // ================================
 
+function showToast(message, type = 'info') {
+    const container = document.querySelector('#toastContainer');
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast--${type}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
 /**
  * Limpia todos los errores relacionados con el formulario de tareas.
  */
@@ -221,7 +235,7 @@ async function handleUserSearch(event) {
         );
     
         if (user) {
-            alert(`Usuario encontrado: ${user.nombre}`);
+            showToast(`Usuario encontrado: ${user.nombre}`);
             console.log('Usuario encontrado:', user);
 
             // 1. Guardamos el usuario para usarlo despues
@@ -299,7 +313,7 @@ async function handleTaskSubmit(event) {
     clearTaskErrors();
 
     if (!usuarioEncontrado) {
-        alert('Primero debes buscar un usuario');
+        showToast('Primero debes buscar un usuario');
         return;
     }
 
@@ -348,10 +362,10 @@ async function handleTaskSubmit(event) {
         );
 
         taskForm.reset();
-        alert('¡Tarea registrada exitosamente!');
+        showToast('¡Tarea registrada exitosamente!');
     } catch (error) {
         console.error('Error al crear la tarea:', error);
-        alert('No se pudo registrar la tarea. Revisa la consola para mas detalles.');
+        showToast('No se pudo registrar la tarea. Revisa la consola para mas detalles.', 'error');
     }
 }
 
@@ -386,6 +400,7 @@ function init() {
 
     // Le pasamos el elemento visual donde queremos que pinte la lista
     Usuariosmostrar(mostrarUsuarios);
+    inicializarModalEdicion(showToast);
 
     console.log('✅ DOM completamente cargado');
     console.log('📝 Aplicacion de gestion de tareas iniciada');

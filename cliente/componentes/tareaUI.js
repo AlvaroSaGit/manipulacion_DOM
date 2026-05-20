@@ -1,4 +1,5 @@
 import { patch, remove } from "../helper/index.js";
+import { abrirModalEdicion } from "./modalEditar.js";
 
 /**
  * Crea una nueva fila en la tabla de tareas y agrega botones de editar y eliminar.
@@ -48,33 +49,29 @@ export function agregarTareaATabla(usuario, titulo, descripcion, taskId, tasksTa
         btnEditar.className = 'btn btn--warning';
         btnEditar.style.marginRight = '8px';
 
-        btnEditar.addEventListener('click', async () => {
-            const nuevoTitulo = prompt('Edita el titulo de la tarea:', celdaTitulo.textContent);
-            if (nuevoTitulo === null) return;
-
-            const nuevaDescripcion = prompt('Edita la descripcion de la tarea:', celdaDescripcion.textContent);
-            if (nuevaDescripcion === null) return;
-
-            if (nuevoTitulo.trim() === '' || nuevaDescripcion.trim() === '') {
-                alert('El titulo y la descripcion no pueden estar vacios.');
-                return;
-            }
-
+        btnEditar.addEventListener('click', () => {
+            abrirModalEdicion({
+        taskId,
+        tituloActual: celdaTitulo.textContent,
+        descripcionActual: celdaDescripcion.textContent,
+        onGuardar: async ({ titulo, descripcion }) => {
             try {
-                // Usamos nuestro helper de PATCH
                 await patch(`tasks/${taskId}`, {
-                    title: nuevoTitulo.trim(),
-                    description: nuevaDescripcion.trim()
+                    title: titulo,
+                    description: descripcion
                 });
 
-                // Reflejamos el cambio en el DOM sin recargar la pagina
-                celdaTitulo.textContent = nuevoTitulo.trim();
-                celdaDescripcion.textContent = nuevaDescripcion.trim();
+                celdaTitulo.textContent = titulo;
+                celdaDescripcion.textContent = descripcion;
+
+                showToast('Tarea actualizada correctamente.', 'success');
             } catch (error) {
                 console.error('Error al editar tarea:', error);
-                alert('Hubo un error al intentar actualizar la tarea.');
+                showToast('Hubo un error al intentar actualizar la tarea.', 'error');
             }
-        });
+        }
+    });
+});;
 
         // Boton eliminar
         const btnEliminar = document.createElement('button');
@@ -94,7 +91,7 @@ export function agregarTareaATabla(usuario, titulo, descripcion, taskId, tasksTa
                 acciones.onTareaEliminada();
             } catch (error) {
                 console.error('Error al eliminar tarea:', error);
-                alert('Hubo un error al intentar eliminar la tarea.');
+                showToast('Hubo un error al intentar eliminar la tarea.', 'error');
             }
         });
 

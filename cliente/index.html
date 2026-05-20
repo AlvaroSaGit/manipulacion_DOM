@@ -128,6 +128,25 @@
             <p class="footer__text">Ejercicio de manipulacion del DOM | SENA - Desarrollo Web</p>
         </footer>
     </div>
+    <div id="toastContainer" class="toast-container"></div>
+    <dialog id="editTaskModal">
+    <form id="editTaskForm">
+        <h3>Editar tarea</h3>
+
+        <label for="editTaskTitle">Titulo</label>
+        <input type="text" id="editTaskTitle" />
+
+        <label for="editTaskDescription">Descripcion</label>
+        <textarea id="editTaskDescription" rows="4"></textarea>
+
+        <div>
+            <button type="button" onclick="document.querySelector('#editTaskModal').close()">
+                Cancelar
+            </button>
+            <button type="submit">Guardar</button>
+        </div>
+    </form>
+    </dialog>
 
     <script src="script.js" type="module"></script>
 </body>

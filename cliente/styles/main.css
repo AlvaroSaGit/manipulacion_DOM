@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 @import url('./abstracts/animaciones.css');
 
 @import url('./base/reset.css');
@@ -14,8 +16,13 @@
 @import url('./components/table.css');
 @import url('./components/user-info.css');
 @import url('./components/mensajes.css');
+@import url('./components/modal.css');
 
 
 
 @import url('./utilities/helpers.css');
 @import url('./utilities/responsive.css');
+
+body {
+    font-family: 'Roboto', sans-serif !important;
+}
