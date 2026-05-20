@@ -1,8 +1,8 @@
-import { get, post, isValidInput, showError, clearError } from "./helper/index.js";
-import { Usuariosmostrar } from "./componentes/usuarioUI.js";
-import { agregarTareaATabla } from "./componentes/tareaUI.js";
-import { inicializarModalEdicion } from "./componentes/modalEditar.js";
-import { inicializarModalEliminar } from './componentes/modalEliminar.js';
+import { get, post, isValidInput, showError, clearError } from "./src/helper/index.js";
+import { Usuariosmostrar } from "./src/componentes/usuarioUI.js";
+import { agregarTareaATabla } from "./src/componentes/tareaUI.js";
+import { inicializarModalEdicion } from "./src/componentes/modalEditar.js";
+import { inicializarModalEliminar } from './src/componentes/modalEliminar.js';
 
 /**
  * Notas sobre como leer este codigo:

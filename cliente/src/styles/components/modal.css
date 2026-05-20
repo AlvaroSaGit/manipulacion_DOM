@@ -4,11 +4,7 @@
 #editTaskModal {
     border: none;
     border-radius: var(--radius);
-<<<<<<< HEAD
-    margin: auto;
-=======
     margin:  0 auto;
->>>>>>> actualizacion/Alert
     padding: 24px;
     width: 100%;
     max-width: 450px;

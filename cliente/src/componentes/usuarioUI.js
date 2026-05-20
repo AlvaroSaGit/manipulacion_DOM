@@ -1,4 +1,4 @@
-import { get } from "../helper/index.js";
+import { get } from "@/helper/index.js";
 
 // ================================
 // 4. MOSTRAR USUARIOS
