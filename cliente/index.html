@@ -128,6 +128,18 @@
                     <button type="submit">Guardar</button>
                 </div>
             </form>
+        <!-- modal para eliminar tareas -->
+        </dialog>
+        <dialog id="deleteTaskModal" class="modal">
+            <form id="deleteTaskForm" class="modal__content">
+                <h3>Eliminar tarea</h3>
+                <p id="deleteTaskMessage">¿Estas seguro de que deseas eliminar esta tarea?</p>
+
+                <div>
+                    <button type="button" id="cancelDeleteTaskBtn">Cancelar</button>
+                    <button type="submit" id="confirmDeleteTaskBtn">Eliminar</button>
+                </div>
+            </form>
         </dialog>
         <!-- Footer informativo -->
         <footer class="footer">

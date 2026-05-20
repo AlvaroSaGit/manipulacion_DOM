@@ -1,5 +1,6 @@
 import { patch, remove } from "../helper/index.js";
 import { abrirModalEdicion } from "./modalEditar.js";
+import { abrirModalEliminar } from './modalEliminar.js';
 
 /**
  * Crea una nueva fila en la tabla de tareas y agrega botones de editar y eliminar.
@@ -10,11 +11,10 @@ import { abrirModalEdicion } from "./modalEditar.js";
  * @param {string} taskId - ID unico de la tarea en la base de datos
  * @param {HTMLElement} tasksTableBody - El cuerpo de la tabla en el DOM
  * @param {Object} acciones - Objeto con callbacks para actualizar el estado global
- * 
- */
-
+ * */
 export function agregarTareaATabla(usuario, titulo, descripcion, taskId, tasksTableBody, acciones) {
     const { onTareaAgregada, onTareaEliminada, showToast } = acciones;
+
     try {
         // Si existe la fila de "No hay tareas", la quitamos para insertar tareas reales
         const emptyRow = document.querySelector('#emptyTasksRow');
@@ -77,30 +77,23 @@ export function agregarTareaATabla(usuario, titulo, descripcion, taskId, tasksTa
                     }
                 }
             });
-        });;
-
+        });
         // Boton eliminar
         const btnEliminar = document.createElement('button');
         btnEliminar.textContent = 'Eliminar';
         btnEliminar.className = 'btn btn--danger';
-
-        btnEliminar.addEventListener('click', async () => {
-            const confirmado = confirm('¿Estas seguro de que deseas eliminar esta tarea?');
-            if (!confirmado) return;
-
-            try {
-                // Usamos nuestro helper de DELETE
-                await remove(`tasks/${taskId}`);
-
-                // Eliminamos la fila visualmente y disparamos la accion global
-                fila.remove();
-                acciones.onTareaEliminada();
-            } catch (error) {
-                console.error('Error al eliminar tarea:', error);
-                showToast('Hubo un error al intentar eliminar la tarea.', 'error');
-            }
+        btnEliminar.addEventListener('click', () => {
+            abrirModalEliminar({
+                mensajeTexto: `¿Estas seguro de que deseas eliminar la tarea "${celdaTitulo.textContent}"?`,
+                onConfirmar: async () => {
+                    await remove(`tasks/${taskId}`);
+                    fila.remove();
+                    onTareaEliminada();
+                }
+            });
         });
 
+        // Construcción de la fila
         celdaAcciones.appendChild(btnEditar);
         celdaAcciones.appendChild(btnEliminar);
         fila.appendChild(celdaUsuario);
@@ -112,6 +105,7 @@ export function agregarTareaATabla(usuario, titulo, descripcion, taskId, tasksTa
 
         // Disparamos la accion global de sumar una tarea
         acciones.onTareaAgregada();
+
     } catch (error) {
         console.error('Error al renderizar tarea:', error);
     }
