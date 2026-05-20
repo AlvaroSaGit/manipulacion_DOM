@@ -22,16 +22,32 @@ export function inicializarModalEdicion(showToast) {
         const titulo = inputTitulo.value.trim();
         const descripcion = inputDescripcion.value.trim();
 
-        if (!titulo || !descripcion) {
+        if (!titulo && !descripcion) {
             showToast('El titulo y la descripcion no pueden estar vacios.', 'error');
             return;
         }
-
-        if (onGuardarActual) {
-            await onGuardarActual({ titulo, descripcion });
+        if (!titulo) {
+            showToast('El titulo no puede estar vacios.', 'error');
+            return;
+        }
+        if (!descripcion) {
+            showToast('La descripcion no puede estar vacia.', 'error');
+            return;
         }
 
-        modal.close();
+        if (!onGuardarActual) {
+            showToast('No hay una funcion para guardar los cambios.', 'error');
+            return;
+        }
+
+        try {
+            await onGuardarActual({ titulo, descripcion });
+            showToast('Tarea actualizada correctamente', 'success');
+            modal.close();
+        } catch (error) {
+            console.error('Error al guardar cambios:', error);
+            showToast('No se pudieron guardar los cambios.', 'error');
+        }
     });
 }
 
@@ -50,4 +66,4 @@ export function abrirModalEdicion({ tituloActual, descripcionActual, onGuardar }
     onGuardarActual = onGuardar;
 
     modal.showModal();
-}   
+}

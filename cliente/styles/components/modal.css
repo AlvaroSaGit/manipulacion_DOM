@@ -1,18 +1,4 @@
-/* Variables de color para fácil personalización */
-:root {
-    --bg-modal: #ffffff;
-    --text-main: #1f2937;
-    --text-muted: #4b5563;
-    --border-color: #e5e7eb;
-    --input-bg: #f9fafb;
-    --primary: #2563eb;
-    /* Azul moderno */
-    --primary-hover: #1d4ed8;
-    --secondary-bg: #f3f4f6;
-    --secondary-hover: #e5e7eb;
-    --radius: 12px;
-    --transition: all 0.2s ease-in-out;
-}
+
 
 /* Estilos para el elemento <dialog> */
 #editTaskModal {
