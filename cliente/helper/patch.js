@@ -5,7 +5,7 @@
  * @returns {promise<any>} - la confirmacion y el registro actualizado.
  */
 export const patch = async (endpoint, data) => {
-    const response = await fetch(`http://localhost:3000/${endpoint}`, {
+    const response = await fetch(`http://10.5.225.158:3000/${endpoint}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
