@@ -5,9 +5,10 @@
  * @returns {promise<any>} - la confirmacion y el registro actualizado.
  */
 
-import {ip} from "./ip.js";
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const patch = async (endpoint, data) => {
-    const response = await fetch(`http://${ip}:3000/${endpoint}`, {
+    const response = await fetch(`http://${apiUrl}/${endpoint}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

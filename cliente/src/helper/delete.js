@@ -3,8 +3,11 @@
  * @param {string} endpoint - la ruta y el id de lo que vamos a borrar (ej: 'tasks/3').
  * @returns {promise<any>} - confirmacion del servidor de que fue eliminado.
  */
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const remove = async (endpoint) => {
-    const response = await fetch(`http://10.5.225.78:3000/${endpoint}`, {
+    const response = await fetch(`${apiUrl}/${endpoint}`, {
         method: 'DELETE'
     });
     if (!response.ok) {
