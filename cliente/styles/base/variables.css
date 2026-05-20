@@ -4,7 +4,7 @@
 
 :root {
     /* Paleta de colores principal */
-    --color-primary: #4f46e5;
+    --color-primary: #199429;
     --color-primary-dark: #4338ca;
     --color-primary-light: #6366f1;
     --color-primary-lighter: #eef2ff;
@@ -24,13 +24,13 @@
     --color-gray-500: #6b7280;
     --color-gray-600: #4b5563;
     --color-gray-700: #374151;
-    --color-gray-800: #1f2937;
+    --color-gray-800: #268144;
     --color-gray-900: #111827;
     
     /* Colores de fondo */
-    --color-background: #ffffff;
+    --color-background: #fcfcfc;
     --color-background-secondary: var(--color-gray-50);
-    --color-surface: #ffffff;
+    --color-surface: #dbd5d500;
     
     /* Colores de texto */
     --color-text-primary: var(--color-gray-900);
@@ -88,4 +88,17 @@
     --z-index-modal: 1050;
     --z-index-tooltip: 1100;
 
+    --bg-modal: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #4b5563;
+    --border-color: #e5e7eb;
+    --input-bg: #f9fafb;
+    --primary: #2563eb;
+    /* Azul moderno */
+    --primary-hover: #1d4ed8;
+    --secondary-bg: #f3f4f6;
+    --secondary-hover: #e5e7eb;
+    --radius: 12px;
+    --transition: all 0.2s ease-in-out;
 }
+

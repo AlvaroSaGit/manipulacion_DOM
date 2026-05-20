@@ -10,8 +10,11 @@ import { abrirModalEdicion } from "./modalEditar.js";
  * @param {string} taskId - ID unico de la tarea en la base de datos
  * @param {HTMLElement} tasksTableBody - El cuerpo de la tabla en el DOM
  * @param {Object} acciones - Objeto con callbacks para actualizar el estado global
+ * 
  */
+
 export function agregarTareaATabla(usuario, titulo, descripcion, taskId, tasksTableBody, acciones) {
+    const { onTareaAgregada, onTareaEliminada, showToast } = acciones;
     try {
         // Si existe la fila de "No hay tareas", la quitamos para insertar tareas reales
         const emptyRow = document.querySelector('#emptyTasksRow');
@@ -51,27 +54,30 @@ export function agregarTareaATabla(usuario, titulo, descripcion, taskId, tasksTa
 
         btnEditar.addEventListener('click', () => {
             abrirModalEdicion({
-        taskId,
-        tituloActual: celdaTitulo.textContent,
-        descripcionActual: celdaDescripcion.textContent,
-        onGuardar: async ({ titulo, descripcion }) => {
-            try {
-                await patch(`tasks/${taskId}`, {
-                    title: titulo,
-                    description: descripcion
-                });
+                taskId,
+                tituloActual: celdaTitulo.textContent,
+                descripcionActual: celdaDescripcion.textContent,
+                onGuardar: async ({ titulo, descripcion }) => {
+                    try {
+                        await patch(`tasks/${taskId}`, {
+                            title: titulo,
+                            description: descripcion
+                        });
 
-                celdaTitulo.textContent = titulo;
-                celdaDescripcion.textContent = descripcion;
+                        celdaTitulo.textContent = titulo;
+                        celdaDescripcion.textContent = descripcion;
 
-                showToast('Tarea actualizada correctamente.', 'success');
-            } catch (error) {
-                console.error('Error al editar tarea:', error);
-                showToast('Hubo un error al intentar actualizar la tarea.', 'error');
-            }
-        }
-    });
-});;
+                        if (typeof showToast === 'function') {
+                            showToast('Tarea actualizada correctamente.', 'success');
+                        }
+                    } catch (error) {
+                        if (typeof showToast === 'function') {
+                            showToast('Hubo un error al intentar actualizar la tarea.', 'error');
+                        }
+                    }
+                }
+            });
+        });;
 
         // Boton eliminar
         const btnEliminar = document.createElement('button');

@@ -257,6 +257,7 @@ async function handleUserSearch(event) {
             usuarioEncontrado = null;
             userInfoContainer.style.display = 'none';
             showError(userDocError, 'Usuario no encontrado');
+            showToast('Usuario no encontrado', 'error');
 
             limpiarTablaTareas();
             renderEmptyTasksRow();
