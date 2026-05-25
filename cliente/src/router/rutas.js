@@ -4,17 +4,22 @@ import { vistaProductos, productosControlador } from "../modulos/productos";
 
 export const rutas = [
   {
-    ruta: '#/productos',
+    ruta: '#/usuario',
     vista: vistaProductos,
     controlador: productosControlador
   },
   {
-    ruta: '#/productos/editar',
+    ruta: '#/tarea',
     vista: vistaProductos,
     controlador: productosControlador
   },
   {
-    ruta: '#/categorias',
+    ruta: '#/usuario/editar',
+    vista: categorias,
+    controlador: categoriasControlador
+  },
+  {
+    ruta: '#/tarea/editar',
     vista: categorias,
     controlador: categoriasControlador
   }
