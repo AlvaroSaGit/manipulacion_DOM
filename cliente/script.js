@@ -405,6 +405,8 @@ function init() {
     inicializarModalEdicion(showToast);
     inicializarModalEliminar(showToast);
 
+
+
     console.log('✅ DOM completamente cargado');
     console.log('📝 Aplicacion de gestion de tareas iniciada');
 }
